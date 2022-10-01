@@ -1,4 +1,4 @@
-import { AppBar, Badge, Box, CircularProgress, Container, CssBaseline, Link, ThemeProvider, Toolbar, Typography} from "@material-ui/core";
+import { AppBar,  Box, CircularProgress, Container, CssBaseline, Link, ThemeProvider, Toolbar, Typography} from "@material-ui/core";
 import Head from "next/head";
 import React from "react";
 import NextLink from 'next/link'
@@ -51,18 +51,8 @@ export default function Layout({
                     href="/cart"
                     className={classes.link}
                   >
-                    {cart.loading ? (
-                      <CircularProgress />
-                    ) : cart.data.total_items > 0 ? (
-                      <Badge
-                        badgeContent={cart.data.total_items}
-                        color="primary"
-                      >
-                        Cart
-                      </Badge>
-                    ) : (
-                      "Cart"
-                    )}
+                   
+                    
                   </Link>
                 </NextLink>
               </nav>

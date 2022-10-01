@@ -17,7 +17,7 @@ import getCommerce from "../../utils/commerce";
 import { useContext, useState } from "react";
 import { useStyles } from "../../utils/styles";
 import { Store } from "../../components/Store";
-
+import { CART_RETRIEVE_SUCCESS } from "../../utils/constants";
 import Router from "next/router";
 
 export default function Product(props) {
@@ -52,18 +52,19 @@ export default function Product(props) {
       <Slide direction="up" in={true}>
         <Grid container spacing={1}>
           <Grid item md={6}>
-            <image
-              src={product.media.source}
+            <img
+              src={product.image.url}
+
               alt={product.name}
               className={classes.largeImage}
-            />
+             />
           </Grid>
           <Grid item md={3} xs={12}>
             <List>
               <ListItem>
                 <Typography
                   gutterBottom
-                  variant="h6" 
+                  variant="h6"
                   color="textPrimary"
                   component="h1"
                 >

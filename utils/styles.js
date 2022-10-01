@@ -1,6 +1,6 @@
-import { createMuiTheme, makeStyles } from "@material-ui/core/";
-
-export const theme = createMuiTheme({
+// import { createMuiTheme, makeStyles } from "@material-ui/core/";
+import { createTheme , makeStyles} from '@material-ui/core/styles';
+export const theme = createTheme({
   typography: {
     h1: {
       fontSize: "2.2rem",

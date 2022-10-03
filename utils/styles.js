@@ -1,6 +1,6 @@
-// import { createMuiTheme, makeStyles } from "@material-ui/core/";
-import { createTheme , makeStyles} from '@material-ui/core/styles';
-export const theme = createTheme({
+import { createMuiTheme, makeStyles } from "@material-ui/core";
+
+export const theme = createMuiTheme({
   typography: {
     h1: {
       fontSize: "2.2rem",
@@ -38,10 +38,31 @@ export const useStyles = makeStyles((theme) => ({
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
-  toolbar: {
+  toolBar: {
     flexWrap: "wrap",
   },
   toolbarTitle: {
     flexGrow: 1,
+  },
+  link: {
+    margin: "1rem",
+  },
+  main: {
+    padding: "1rem",
+  },
+  largeImage: {
+    maxWidth: "50rem",
+    width: "1oo%,",
+  },
+  mt1: {
+    marginTop: "1rem !important",
+  },
+  p1: {
+    padding: "1rem !important",
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+    width: "100%",
   },
 }));

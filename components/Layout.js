@@ -1,8 +1,9 @@
 import React, { useContext, useEffect } from "react";
+import Head from "next/head";
 import {
-  ThemeProvider,
-  CssBaseline,
   AppBar,
+  CssBaseline,
+  ThemeProvider,
   Toolbar,
   Link,
   Container,
@@ -12,21 +13,21 @@ import {
   Badge,
 } from "@material-ui/core";
 import { theme, useStyles } from "../utils/styles";
-import Head from "next/head";
 import NextLink from "next/link";
 import {
   CART_RETRIEVE_REQUEST,
   CART_RETRIEVE_SUCCESS,
-} from "../utils/constants";
-import { Store } from "./Store";
+} from "../utils/constant";
 import getCommerce from "../utils/commerce";
+import { Store } from "./Store";
 
 export default function Layout({
   children,
   commercePublicKey,
-  title = "Coolshop",
+  title = "GreenBajar",
 }) {
   const classes = useStyles();
+
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
 
@@ -37,18 +38,19 @@ export default function Layout({
       const cartData = await commerce.cart.retrieve();
       dispatch({ type: CART_RETRIEVE_SUCCESS, payload: cartData });
     };
-    fetchCart();
-  }, [commercePublicKey, dispatch]);
+    fetchCart().then(() => {});
+  }, []);
 
+  console.log(cart);
   return (
     <React.Fragment>
       <Head>
         <meta charSet="utf-8" />
-        <title>{`${title} - Coolshop`}</title>
+        <title>{`${title} - GreenBajar`}</title>
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no"
+          content="width=device-width,initial-scale=1,shrink-to-fit=no"
         />
       </Head>
       <ThemeProvider theme={theme}>
@@ -59,7 +61,7 @@ export default function Layout({
           elevation={0}
           className={classes.appBar}
         >
-          <Toolbar className={classes.toolbar}>
+          <Toolbar>
             <NextLink href="/">
               <Link
                 variant="h6"
@@ -68,11 +70,11 @@ export default function Layout({
                 href="/"
                 className={classes.toolbarTitle}
               >
-                Coolshop
+                GreenBajar
               </Link>
             </NextLink>
             <nav>
-              <NextLink href="/cart">
+              <NextLink href="cart">
                 <Link
                   variant="button"
                   color="textPrimary"
@@ -99,9 +101,7 @@ export default function Layout({
         <Container maxWidth="md" component="footer">
           <Box mt={5}>
             <Typography variant="body2" color="textSecondary" align="center">
-              {"© "}
-              Coolshop 2021
-              {"."}
+              &copy; GreenBajar 2021 .
             </Typography>
           </Box>
         </Container>

@@ -1,23 +1,24 @@
-import Link from "next/link";
+import React from "react";
+import { Alert } from "@material-ui/lab";
 import {
   Box,
+  Button,
   Card,
+  Grid,
   List,
   ListItem,
-  Select,
   MenuItem,
-  Button,
-  Grid,
+  Select,
   Slide,
   Typography,
 } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-import Layout from "../../components/Layout";
+
 import getCommerce from "../../utils/commerce";
+import Layout from "../../components/Layout";
 import { useContext, useState } from "react";
 import { useStyles } from "../../utils/styles";
+import { CART_RETRIEVE_SUCCESS } from "../../utils/constant";
 import { Store } from "../../components/Store";
-import { CART_RETRIEVE_SUCCESS } from "../../utils/constants";
 import Router from "next/router";
 
 export default function Product(props) {
@@ -29,9 +30,11 @@ export default function Product(props) {
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
 
+  // console.log("id",cart)
+
   const addToCartHandler = async () => {
     const commerce = getCommerce(props.commercePublicKey);
-    const lineItem = cart.data.line_items.find(
+    const lineItem = cart.data?.line_items.find(
       (x) => x.product_id === product.id
     );
     if (lineItem) {
@@ -39,11 +42,11 @@ export default function Product(props) {
         quantity: quantity,
       });
       dispatch({ type: CART_RETRIEVE_SUCCESS, payload: cartData.cart });
-      Router.push("/cart");
+      await Router.push("/cart");
     } else {
       const cartData = await commerce.cart.add(product.id, quantity);
-      dispatch({ type: CART_RETRIEVE_SUCCESS, payload: cartData.cart });
-      Router.push("/cart");
+      dispatch({ CART_RETRIEVE_SUCCESS, payload: cartData.cart });
+      await Router.push("/cart");
     }
   };
 
@@ -53,11 +56,11 @@ export default function Product(props) {
         <Grid container spacing={1}>
           <Grid item md={6}>
             <img
-              src={product.image.url}
-
+              src={product.media.source}
               alt={product.name}
+              width={"100%"}
               className={classes.largeImage}
-             />
+            />
           </Grid>
           <Grid item md={3} xs={12}>
             <List>
@@ -74,7 +77,7 @@ export default function Product(props) {
               <ListItem>
                 <Box
                   dangerouslySetInnerHTML={{ __html: product.description }}
-                ></Box>
+                />
               </ListItem>
             </List>
           </Grid>
@@ -97,7 +100,7 @@ export default function Product(props) {
                       Status
                     </Grid>
                     <Grid item xs={6}>
-                      {product.quantity > 0 ? (
+                      {product.inventory.available > 0 ? (
                         <Alert icon={false} severity="success">
                           In Stock
                         </Alert>
@@ -109,7 +112,8 @@ export default function Product(props) {
                     </Grid>
                   </Grid>
                 </ListItem>
-                {product.quantity > 0 && (
+
+                {product.inventory.available > 0 && (
                   <>
                     <ListItem>
                       <Grid container justify="flex-end">
@@ -118,32 +122,32 @@ export default function Product(props) {
                         </Grid>
                         <Grid item xs={6}>
                           <Select
-                            labelId="quanitity-label"
-                            id="quanitity"
+                            labelId="quantity-label"
+                            id="quantity"
                             fullWidth
                             onChange={(e) => setQuantity(e.target.value)}
                             value={quantity}
                           >
-                            {[...Array(product.quantity).keys()].map((x) => (
-                              <MenuItem key={x + 1} value={x + 1}>
-                                {x + 1}
-                              </MenuItem>
-                            ))}
+                            {[...Array(product.inventory.available).keys()].map(
+                              (x) => (
+                                <MenuItem key={x + 1} value={x + 1}>
+                                  {x + 1}
+                                </MenuItem>
+                              )
+                            )}
                           </Select>
                         </Grid>
                       </Grid>
                     </ListItem>
-                    <ListItem>
-                      <Button
-                        type="button"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        onClick={addToCartHandler}
-                      >
-                        Add to cart
-                      </Button>
-                    </ListItem>
+                    <Button
+                      type="button"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      onClick={addToCartHandler}
+                    >
+                      Add to cart
+                    </Button>
                   </>
                 )}
               </List>
@@ -156,6 +160,7 @@ export default function Product(props) {
 }
 
 export async function getServerSideProps({ params }) {
+  console.log(params);
   const { id } = params;
   const commerce = getCommerce();
   const product = await commerce.products.retrieve(id, {

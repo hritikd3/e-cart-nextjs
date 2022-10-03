@@ -1,5 +1,6 @@
 import React from "react";
-import Link from "next/link";
+import { useContext } from "react";
+import { Alert } from "@material-ui/lab";
 import {
   Button,
   Card,
@@ -18,14 +19,14 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import dynamic from "next/dynamic";
-import { Alert } from "@material-ui/lab";
-import Layout from "../components/Layout";
+import Link from "next/link";
+
 import getCommerce from "../utils/commerce";
-import { useStyles } from "../utils/styles";
-import { useContext } from "react";
+import Layout from "../components/Layout";
 import { Store } from "../components/Store";
-import { CART_RETRIEVE_SUCCESS } from "../utils/constants";
+import { useStyles } from "../utils/styles";
+import dynamic from "next/dynamic";
+import { CART_RETRIEVE_SUCCESS } from "../utils/constant";
 import Router from "next/router";
 
 function Cart(props) {
@@ -38,36 +39,35 @@ function Cart(props) {
     const cartData = await commerce.cart.remove(lineItem.id);
     dispatch({ type: CART_RETRIEVE_SUCCESS, payload: cartData.cart });
   };
+
   const quantityChangeHandler = async (lineItem, quantity) => {
     const commerce = getCommerce(props.commercePublicKey);
-    const cartData = await commerce.cart.update(lineItem.id, {
-      quantity,
-    });
+    const cartData = await commerce.cart.update(lineItem.id, { quantity });
     dispatch({ type: CART_RETRIEVE_SUCCESS, payload: cartData.cart });
   };
 
-  const proccessToCheckoutHandler = () => {
-    Router.push("/checkout");
+  const processToCheckoutHandler = () => {
+    Router.push("checkout").then(() => {});
   };
 
   return (
-    <Layout title="Home" commercePublicKey={props.commercePublicKey}>
+    <Layout title="home" commercePublicKey={props.commercePublicKey}>
       {cart.loading ? (
         <CircularProgress />
       ) : cart.data.line_items.length === 0 ? (
         <Alert icon={false} severity="error">
-          Cart is empty. <Link href="/">Go shopping</Link>
+          Cart is empty. <Link href="/">Go Shopping</Link>
         </Alert>
       ) : (
         <React.Fragment>
           <Typography variant="h1" component="h1">
-            Shopping Cart
+            ShoppingCart
           </Typography>
-          <Slide direction="up" in={true}>
+          <Slide direction="up" in>
             <Grid container spacing={1}>
               <Grid item md={9}>
                 <TableContainer>
-                  <Table aria-label="Orders">
+                  <Table area-label="orders">
                     <TableHead>
                       <TableRow>
                         <TableCell>Name</TableCell>
@@ -84,8 +84,8 @@ function Cart(props) {
                           </TableCell>
                           <TableCell align="right">
                             <Select
-                              labelId="quanitity-label"
-                              id="quanitity"
+                              labelId="quantity-label"
+                              id="quantity"
                               onChange={(e) =>
                                 quantityChangeHandler(cartItem, e.target.value)
                               }
@@ -107,7 +107,7 @@ function Cart(props) {
                               variant="contained"
                               color="secondary"
                             >
-                              x
+                              X
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -121,8 +121,8 @@ function Cart(props) {
                   <List>
                     <ListItem>
                       <Grid container>
-                        <Typography variant="h6">
-                          Subtotal: {cart.data.subtotal.formatted_with_symbol}
+                        <Typography cariant="h6">
+                          Subtotal:{cart.data.subtotal.formatted_with_symbol}
                         </Typography>
                       </Grid>
                     </ListItem>
@@ -133,7 +133,7 @@ function Cart(props) {
                           fullWidth
                           variant="contained"
                           color="primary"
-                          onClick={proccessToCheckoutHandler}
+                          onClick={processToCheckoutHandler}
                         >
                           Proceed to checkout
                         </Button>

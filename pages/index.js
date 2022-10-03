@@ -1,4 +1,5 @@
-import Link from "next/link";
+import React from "react";
+import { Alert } from "@material-ui/lab";
 import {
   Box,
   Card,
@@ -6,34 +7,47 @@ import {
   CardContent,
   CardMedia,
   Grid,
+  makeStyles,
   Slide,
   Typography,
 } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
-import Layout from "../components/Layout";
+import Link from "next/link";
+
 import getCommerce from "../utils/commerce";
+import Layout from "../components/Layout";
+
+const useStyles = makeStyles({
+  root: {
+    maxWidth: 345,
+  },
+  media: {
+    height: 160,
+  },
+});
 
 export default function Home(props) {
+  const classes = useStyles();
+
   const { products } = props;
   return (
-    <Layout title="Home" commercePublicKey={props.commercePublicKey}>
+    <Layout title="home" commercePublicKey={props.commercePublicKey}>
       {products.length === 0 && <Alert>No product found</Alert>}
       <Grid container spacing={1}>
-        {products.map((product) => (
-          <Grid key={product.id} item md={3}>
+        {products?.map((product) => (
+          <Grid item md={3} key={product.id}>
             <Slide direction="up" in={true}>
               <Card>
-                <Link href={`/products/${product.permalink}`}>
+                <Link href={`/products/${product.permalink}`} passHref>
                   <CardActionArea>
                     <CardMedia
+                      className={classes.media}
                       component="img"
                       alt={product.name}
-                      image={product.image.url}
+                      image={product.media.source}
                     />
-                   
                     <CardContent>
                       <Typography
-                        gutterBottom
+                        gutterButtom
                         variant="body2"
                         color="textPrimary"
                         component="p"
@@ -60,6 +74,7 @@ export default function Home(props) {
     </Layout>
   );
 }
+
 export async function getStaticProps() {
   const commerce = getCommerce();
   const { data: products } = await commerce.products.list();

@@ -3,7 +3,7 @@ import {
   CART_RETRIEVE_REQUEST,
   CART_RETRIEVE_SUCCESS,
   ORDER_SET,
-} from "../utils/constants";
+} from "../utils/constant";
 
 export const Store = createContext();
 
@@ -20,14 +20,12 @@ function reducer(state, action) {
         cart: { loading: false, data: action.payload },
       };
     case ORDER_SET:
-      return {
-        ...state,
-        order: action.payload,
-      };
+      return { ...state, order: action.payload };
     default:
       return state;
   }
 }
+
 const initialState = {
   cart: { loading: true },
   order:
@@ -36,6 +34,7 @@ const initialState = {
       ? JSON.parse(window.localStorage.getItem("order_receipt"))
       : null,
 };
+
 export function StoreProvider(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = { state, dispatch };
